@@ -58,7 +58,7 @@ for epoch in range(epochs):
     # Saves model if it performed better than the previous best
     if loss.item() <= best_loss:
         best_loss = loss.item()
-        torch.save(model.state_dict(), "/content/drive/MyDrive/clip.pt")
+        torch.save(model.state_dict(), "models/clip.pt")
         print("Model Saved.")
 
 
