@@ -65,7 +65,7 @@ for epoch in range(epochs):
 # =================== Testing ==================================================
 # Loading Best Model
 model = CLIP(emb_dim, vit_width, img_size, patch_size, n_channels, vit_layers, vit_heads, vocab_size, text_width, max_seq_length, text_heads, text_layers).to(device)
-model.load_state_dict(torch.load("/content/drive/MyDrive/clip.pt", map_location=device))
+model.load_state_dict(torch.load("models/clip.pt", map_location=device))
 
 # Getting dataset captions to compare images to
 text = torch.stack([tokenizer(x)[0] for x in test_set.captions.values()]).to(device)
@@ -93,7 +93,7 @@ print(f'\nModel Accuracy: {100 * correct // total} %')
 # =================== Zero-Shot Classification ==================================================
 # Loading Best Model
 model = CLIP(emb_dim, vit_width, img_size, patch_size, n_channels, vit_layers, vit_heads, vocab_size, text_width, max_seq_length, text_heads, text_layers).to(device)
-model.load_state_dict(torch.load("/content/drive/MyDrive/clip.pt", map_location=device))
+model.load_state_dict(torch.load("models/clip.pt", map_location=device))
 
 
 # Captions to compare images to
