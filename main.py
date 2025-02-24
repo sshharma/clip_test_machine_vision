@@ -79,8 +79,8 @@ model = CLIP(emb_dim, vit_width, img_size, patch_size, n_channels, vit_layers, v
 model.load_state_dict(torch.load("models/clip.pt", map_location=device))
 
 # Getting dataset captions to compare images to
-text = torch.stack([tokenizer(x)[0] for x in test_set.captions.values()]).to(device)
-mask = torch.stack([tokenizer(x)[1] for x in test_set.captions.values()])
+text = torch.stack([tokenizer(x)[0] for x in test_set.caption.values()]).to(device)
+mask = torch.stack([tokenizer(x)[1] for x in test_set.caption.values()])
 mask = mask.repeat(1,len(mask[0])).reshape(len(mask),len(mask[0]),len(mask[0])).to(device)
 
 correct, total = 0,0
