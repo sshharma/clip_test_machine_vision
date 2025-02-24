@@ -1,3 +1,5 @@
+import argparse
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -7,16 +9,17 @@ from datasets import load_dataset
 import matplotlib.pyplot as plt
 import numpy as np
 from PositionalEmbedding import PositionalEmbedding
-from dataset import FashionMNIST
+from dataset import Animal5
 from utils import tokenizer
 from CLIP_model import CLIP
+from torch.utils.data import DataLoader
 
 
 emb_dim = 32
 vit_width = 9
-img_size = (28,28)
+img_size = (224,224)
 patch_size = (14,14)
-n_channels = 1
+n_channels = 3
 vit_layers = 3
 vit_heads = 3
 vocab_size = 256
@@ -29,9 +32,17 @@ epochs = 10
 batch_size = 128
 
 
+parser  = argparse.ArgumentParser(description="Clip implementation")
+parser.add_argument("--train_data_dir", type=str, default='datasets/data-5/train/')
+parser.add_argument('--test_data_dir', type=str, default='datasets/data-5/test/')
+
+args = parser.parse_args()
+
+
+
 # Loading Dataset
-train_set = FashionMNIST(train = True)
-test_set = FashionMNIST(train = False)
+train_set = Animal5(args.train_data_dir, train = True, img_size=img_size)
+test_set = Animal5(args.test_data_dir, train = False, img_size=img_size)
 
 train_loader = DataLoader(train_set, shuffle=True, batch_size=batch_size)
 test_loader = DataLoader(test_set, shuffle=False, batch_size=batch_size)
@@ -97,16 +108,7 @@ model.load_state_dict(torch.load("models/clip.pt", map_location=device))
 
 
 # Captions to compare images to
-class_names =["t-shirt/top",
-                        "trousers",
-                        "pullover",
-                        "dress",
-                        "coat",
-                        "sandal",
-                        "shirt",
-                        "sneaker",
-                        "bag",
-                        "ankle boot"]
+class_names =["butterfly", "cat", "chicken", "dog", "spider"]
 
 text = torch.stack([tokenizer(x)[0] for x in class_names]).to(device)
 mask = torch.stack([tokenizer(x)[1] for x in class_names])

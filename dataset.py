@@ -6,7 +6,7 @@ from utils import tokenizer  # assuming your tokenizer function remains unchange
 
 
 class Animal5(Dataset):
-    def __init__(self, root_dir, train=True, caption_map=None):
+    def __init__(self, root_dir, train=True, caption_map=None, img_size=(224,24)):
         """
         Args:
             root_dir (str): Path to the root directory of your dataset.
@@ -14,9 +14,15 @@ class Animal5(Dataset):
             caption_map (dict, optional): A dictionary mapping category names to custom captions.
                                            If not provided, a default caption is generated.
         """
-        self.split = "train" if train else "test"
-        self.data_dir = os.path.join(root_dir, self.split)
-        self.transform = t.ToTensor()
+        # self.split = "train" if train else "test"
+        # self.data_dir = os.path.join(root_dir, self.split)
+        self.data_dir = root_dir
+        self.transform = t.Compose([
+            t.Resize(img_size),
+            t.ToTensor(),
+        ]
+
+        )
 
         # Load all image paths and their corresponding category names.
         self.data = []
