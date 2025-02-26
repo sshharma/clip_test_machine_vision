@@ -6,13 +6,14 @@ from utils import tokenizer  # assuming your tokenizer function remains unchange
 
 
 class Animal5(Dataset):
-    def __init__(self, root_dir, train=True, caption_map=None, img_size=(224,24)):
+    def __init__(self, root_dir, train=True, caption_map=None, img_size=(224,224)):
         """
         Args:
             root_dir (str): Path to the root directory of your dataset.
             train (bool): Whether to load the training set (True) or test set (False).
             caption_map (dict, optional): A dictionary mapping category names to custom captions.
                                            If not provided, a default caption is generated.
+            img_size (tuple): The target size to which all images will be resized.
         """
         # self.split = "train" if train else "test"
         # self.data_dir = os.path.join(root_dir, self.split)
@@ -20,9 +21,7 @@ class Animal5(Dataset):
         self.transform = t.Compose([
             t.Resize(img_size),
             t.ToTensor(),
-        ]
-
-        )
+        ])
 
         # Load all image paths and their corresponding category names.
         self.data = []
@@ -36,6 +35,13 @@ class Animal5(Dataset):
 
         # Store the provided caption mapping or use an empty dictionary.
         self.caption_map = caption_map if caption_map is not None else {}
+
+        self.caption = {}
+        for category in os.listdir(self.data_dir):
+            category_path = os.path.join(self.data_dir, category)
+            if os.path.isdir(category_path):
+                self.caption[category] = self.caption_map.get(category, f"An image of {category}")
+
 
     def __len__(self):
         return len(self.data)

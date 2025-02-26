@@ -94,7 +94,7 @@ with torch.no_grad():
         text_features /= text_features.norm(dim=-1, keepdim=True)
         similarity = (100.0 * image_features @ text_features.T).softmax(dim=-1)
         _, indices = torch.max(similarity,1)
-        pred = torch.stack([tokenizer(test_set.captions[int(i)])[0] for i in indices]).to(device)
+        pred = torch.stack([tokenizer(test_set.caption[int(i)])[0] for i in indices]).to(device)
         correct += int(sum(torch.sum((pred==labels),dim=1)//len(pred[0])))
         total += len(labels)
 
@@ -110,7 +110,8 @@ model.load_state_dict(torch.load("models/clip.pt", map_location=device))
 # Captions to compare images to
 class_names =["butterfly", "cat", "chicken", "dog", "spider"]
 
-text = torch.stack([tokenizer(x)[0] for x in class_names]).to(device)
+# text = torch.stack([tokenizer(x)[0] for x in class_names]).to(device)
+text = torch.stack([tokenizer(x)[0] for x in test_set.caption.values()]).to(device)
 mask = torch.stack([tokenizer(x)[1] for x in class_names])
 mask = mask.repeat(1,len(mask[0])).reshape(len(mask),len(mask[0]),len(mask[0])).to(device)
 
